@@ -1,6 +1,6 @@
 #!/bin/bash
 if [ `id -u` != 0 ]; then
-  echo "需要用root用户执行."
+  echo "需要用root用户执行. 使用 'sudo su' 或 'su -' 切换到root."
   exit 1;
 fi
 
