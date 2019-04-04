@@ -1,11 +1,27 @@
 #!/bin/bash
+if [ `id -u` != 0 ]; then
+  echo "需要用root用户执行."
+  exit 1;
+fi
 
+# 安装ohzsh
+yum install git curl wget zsh vim -y
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+
+# 添加login_show
+curl -o /usr/local/bin/login_show.sh https://raw.githubusercontent.com/HaroldHoo/public/master/centos/login_show.sh
+chmod +x /usr/local/bin/login_show.sh
+echo "/usr/local/bin/login_show.sh" >> /etc/bashrc
+echo "/usr/local/bin/login_show.sh" >> /etc/zshrc
+
+# 时区与时间同步
 cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
 yum install ntp  ntpdate
 systemctl enable ntpd
 systemctl start ntpd
 ntpdate cn.pool.ntp.org
 
+# yum源
 yum install -y epel-release
 sed -e 's!^mirrorlist=!#mirrorlist=!g' \
          -e 's!^#baseurl=!baseurl=!g' \
@@ -17,10 +33,12 @@ curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-
 yum clean all && yum makecache
 yum update
 
+# 加速ssh登录
 sed -i 's/#UseDNS yes/UseDNS no/g' /etc/ssh/sshd_config
 sed -i 's/GSSAPIAuthentication yes/GSSAPIAuthentication no/g' /etc/ssh/sshd_config
 sudo systemctl restart sshd
 
+# 内核调整
 cat >/etc/sysctl.conf <<EOF
 # sysctl settings are defined through files in
 # /usr/lib/sysctl.d/, /run/sysctl.d/, and /etc/sysctl.d/.
@@ -125,9 +143,11 @@ net.ipv4.conf.default.accept_redirects = 0
 net.ipv4.conf.all.secure_redirects = 0
 net.ipv4.conf.default.secure_redirects = 0
 EOF
-sysctl -p
 
 echo 1 > /proc/sys/net/ipv4/ip_forward
+sysctl -p
+
+# 调优
 /bin/echo "* soft nproc 65500" >>/etc/security/limits.conf
 /bin/echo "* hard nproc 65500" >>/etc/security/limits.conf
 /bin/echo "* soft nofile 65500" >>/etc/security/limits.conf
