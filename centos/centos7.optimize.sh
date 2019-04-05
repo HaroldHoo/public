@@ -4,9 +4,7 @@ if [ `id -u` != 0 ]; then
   exit 1;
 fi
 
-# 安装ohzsh
 yum install git curl wget zsh vim -y
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
 # 添加login_show
 curl -o /usr/local/bin/login_show.sh https://raw.githubusercontent.com/HaroldHoo/public/master/centos/login_show.sh
@@ -16,7 +14,7 @@ echo "/usr/local/bin/login_show.sh" >> /etc/zshrc
 
 # 时区与时间同步
 cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
-yum install ntp  ntpdate
+yum install ntp ntpdate -y
 systemctl enable ntpd
 systemctl start ntpd
 ntpdate cn.pool.ntp.org
@@ -31,12 +29,15 @@ sed -e 's!^mirrorlist=!#mirrorlist=!g' \
 
 curl -o /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo
 yum clean all && yum makecache
-yum update
+yum update -y
 
 # 加速ssh登录
 sed -i 's/#UseDNS yes/UseDNS no/g' /etc/ssh/sshd_config
 sed -i 's/GSSAPIAuthentication yes/GSSAPIAuthentication no/g' /etc/ssh/sshd_config
 sudo systemctl restart sshd
+
+# 关闭selinux
+sed -i 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
 
 # 内核调整
 cat >/etc/sysctl.conf <<EOF
@@ -153,4 +154,6 @@ sysctl -p
 /bin/echo "* soft nofile 65500" >>/etc/security/limits.conf
 /bin/echo "* hard nofile 65500" >>/etc/security/limits.conf
 
+# 安装ohzsh
+sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
