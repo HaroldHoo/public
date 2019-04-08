@@ -2,7 +2,7 @@
 > yum install -y qemu-kvm virt-install libvirt
 
 #### conf br0 network
-> (配置)[https://blog.csdn.net/jiuzuidongpo/article/details/44677565]
+> https://blog.csdn.net/jiuzuidongpo/article/details/44677565
 
 #### start libvirtd
 > systemctl start libvirtd && systemctl enable libvirtd
