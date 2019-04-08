@@ -4,13 +4,19 @@ if [ `id -u` != 0 ]; then
   exit 1;
 fi
 
-yum install git curl wget zsh vim -y
+yum install git curl wget zsh vim iptables-services -y
+sudo /sbin/iptables -F
+sudo /sbin/iptables -P INPUT ACCEPT
+sudo /sbin/iptables -P OUTPUT ACCEPT
+sudo /sbin/iptables -P FORWARD ACCEPT
+sudo service iptables save
+sudo systemctl restart iptables
+sudo systemctl enable iptables
 
 # 添加login_show
 curl -o /usr/local/bin/login_show.sh https://raw.githubusercontent.com/HaroldHoo/public/master/centos/login_show.sh
 chmod +x /usr/local/bin/login_show.sh
-echo "/usr/local/bin/login_show.sh" >> /etc/bashrc
-echo "/usr/local/bin/login_show.sh" >> /etc/zshrc
+echo "sh /usr/local/bin/login_show.sh" >> /etc/profile
 
 # 时区与时间同步
 cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
