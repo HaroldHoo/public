@@ -17,5 +17,4 @@
 > virt-clone --original vm --name vm11 --file /home/qemu/kvms/vm11.img
 
 #### modify vnc conf
-> vim /etc/libvirt/qemu/vm11.xml (search vnc & autoport='no')
-> virsh define /etc/libvirt/qemu/vm11.xml
+> vim /etc/libvirt/qemu/vm11.xml (search vnc & autoport='no')  &&  virsh define /etc/libvirt/qemu/vm11.xml
