@@ -4,7 +4,7 @@ if [ `id -u` != 0 ]; then
   exit 1;
 fi
 
-yum install git curl wget zsh vim iptables-services -y
+yum install git curl wget zsh vim iptables-services sysstat -y
 sudo /sbin/iptables -F
 sudo /sbin/iptables -P INPUT ACCEPT
 sudo /sbin/iptables -P OUTPUT ACCEPT
