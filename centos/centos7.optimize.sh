@@ -149,6 +149,9 @@ net.ipv4.conf.all.accept_redirects = 0
 net.ipv4.conf.default.accept_redirects = 0
 net.ipv4.conf.all.secure_redirects = 0
 net.ipv4.conf.default.secure_redirects = 0
+
+#系统最大fd打开数
+fs.file-max = 6553560
 EOF
 
 echo 1 > /proc/sys/net/ipv4/ip_forward
